@@ -14,8 +14,6 @@
 -- =====================================================
 -- MASTER TABLES
 -- =====================================================
-CREATE DATABASE candidate_qa;
-USE candidate_qa;
 
 CREATE TABLE IF NOT EXISTS tbl_cd_msalutation (
   salutation_id INT AUTO_INCREMENT PRIMARY KEY,
