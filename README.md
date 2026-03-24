@@ -1,3 +1,16 @@
+## How to Run
+
+1. Select database:
+   USE candidate;      -- Dev
+   USE candidate_qa;   -- QA
+
+2. Run schema:
+   SOURCE SCHEMA.sql;
+
+3. Insert data:
+   SOURCE seed.sql;
+
+
 # Candidate Database Deployment
 
 ## Environments
