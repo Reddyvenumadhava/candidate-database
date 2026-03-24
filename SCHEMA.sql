@@ -1,12 +1,21 @@
 -- =====================================================
--- CREATE DATABASE
+-- VERSION: 1.0
+-- ENV: DEV / QA / PROD
+-- DESCRIPTION: Candidate Database Schema
 -- =====================================================
-CREATE DATABASE IF NOT EXISTS candidate;
-USE candidate;
+-- =====================================================
+-- NOTE:
+-- Run this script after selecting database
+-- Example:
+-- USE candidate;
+-- OR USE candidate_qa;
+-- =====================================================
 
 -- =====================================================
 -- MASTER TABLES
 -- =====================================================
+CREATE DATABASE candidate_qa;
+USE candidate_qa;
 
 CREATE TABLE IF NOT EXISTS tbl_cd_msalutation (
   salutation_id INT AUTO_INCREMENT PRIMARY KEY,
