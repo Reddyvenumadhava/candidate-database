@@ -26,6 +26,4 @@
 * Any changes to schema.sql can be deployed to QA/Production
 * No manual database creation required
 
-## Author
 
-Your Name
