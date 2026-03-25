@@ -25,9 +25,16 @@ jobs:
 
       - name: Run Schema
         run: |
-          echo "Files in repo:"
+          echo "pipeline started"
+          echo "Time: $(date)"
+
+          echo "current directory:"
+          pwd
+
+          echo "files in repo:"
           ls -la
 
+          echo "running schema script..."
           /opt/mssql-tools/bin/sqlcmd \
           -S ${{ secrets.AZURE_SQL_SERVER }} \
           -d ${{ secrets.AZURE_SQL_DB }} \
