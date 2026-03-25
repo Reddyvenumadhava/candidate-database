@@ -33,7 +33,7 @@ jobs:
           -d ${{ secrets.AZURE_SQL_DB }} \
           -U ${{ secrets.AZURE_SQL_USER }} \
           -P ${{ secrets.AZURE_SQL_PASSWORD }} \
-          -i ./V1__SCHEMA.sql
+          -i ./V1_SCHEMA.sql
 
       - name: Run Seed
         run: |
@@ -42,4 +42,4 @@ jobs:
           -d ${{ secrets.AZURE_SQL_DB }} \
           -U ${{ secrets.AZURE_SQL_USER }} \
           -P ${{ secrets.AZURE_SQL_PASSWORD }} \
-          -i ./V2__seed.sql
+          -i ./V2_seed.sql
