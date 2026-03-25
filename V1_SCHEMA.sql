@@ -5,7 +5,7 @@
 -- ========================
 -- MASTER TABLES
 -- ========================
-
+Create table tbl_cd_mskills;
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'tbl_cd_msalutation')
 CREATE TABLE tbl_cd_msalutation (
   salutation_id INT IDENTITY(1,1) PRIMARY KEY,
