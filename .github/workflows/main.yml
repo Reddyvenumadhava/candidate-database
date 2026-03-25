@@ -1,0 +1,37 @@
+name: Deploy DB to Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install SQLCMD
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mssql-tools unixodbc-dev
+
+      - name: Run Schema
+        run: |
+          /opt/mssql-tools/bin/sqlcmd \
+          -S "${{ secrets.AZURE_SQL_SERVER }}" \
+          -d "${{ secrets.AZURE_SQL_DB }}" \
+          -U "${{ secrets.AZURE_SQL_USER }}" \
+          -P "${{ secrets.AZURE_SQL_PASSWORD }}" \
+          -i V1__SCHEMA.sql
+
+      - name: Run Seed
+        run: |
+          /opt/mssql-tools/bin/sqlcmd \
+          -S "${{ secrets.AZURE_SQL_SERVER }}" \
+          -d "${{ secrets.AZURE_SQL_DB }}" \
+          -U "${{ secrets.AZURE_SQL_USER }}" \
+          -P "${{ secrets.AZURE_SQL_PASSWORD }}" \
+          -i V2__seed.sql
