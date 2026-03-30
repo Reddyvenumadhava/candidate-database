@@ -94,3 +94,7 @@ jobs:
         with:
           app-name: venu-api
           package: backend
+      - name: Test Pipeline
+        run: |
+          echo "Pipeline is working fine"
+          date
