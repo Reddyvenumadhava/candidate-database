@@ -66,3 +66,11 @@ jobs:
           else
             echo "WARNING: V2_seed.sql not found, skipping..."
           fi
+
+      - name: Debug Files
+        run: |
+          echo "Listing files in repo:"
+          ls -la
+          echo "Current directory:"
+          pwd
+          date
