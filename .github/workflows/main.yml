@@ -78,7 +78,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
 
       # Step 8: Azure Login
       - name: Azure Login
