@@ -1,4 +1,4 @@
-name: Full Deployment
+name: Full Deployment (DB + Backend)
 
 on:
 push:
@@ -8,48 +8,90 @@ branches:
 jobs:
 deploy:
 runs-on: ubuntu-latest
+permissions:
+id-token: write
+contents: read
 
 ```
-steps:
-  - uses: actions/checkout@v3
+#steps:
+  # Step 1: Checkout repo
+  - name: Checkout repo
+    uses: actions/checkout@v3
 
-  - name: Install SQL Tools
+  # Step 2: Install SQLCMD
+  - name: Install SQLCMD
     run: |
       sudo apt-get update
-      sudo apt-get install -y mssql-tools unixodbc-dev
+      sudo apt-get install -y curl apt-transport-https
+      curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+      curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+      sudo apt-get update
+      sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
 
+  # Step 3: Debug
+  - name: Debug Files
+    run: |
+      echo "Files:"
+      ls -la
+      pwd
+      date
+
+  # Step 4: Run Schema
   - name: Run Schema
     run: |
-      /opt/mssql-tools/bin/sqlcmd \
-      -S ${{ secrets.AZURE_SQL_SERVER }} \
-      -d ${{ secrets.AZURE_SQL_DB }} \
-      -U ${{ secrets.AZURE_SQL_USER }} \
-      -P ${{ secrets.AZURE_SQL_PASSWORD }} \
-      -i V1_SCHEMA.sql
+      echo "Running Schema..."
 
+      if [ -f "V1_SCHEMA.sql" ]; then
+        /opt/mssql-tools/bin/sqlcmd \
+        -S ${{ secrets.AZURE_SQL_SERVER }} \
+        -d ${{ secrets.AZURE_SQL_DB }} \
+        -U ${{ secrets.AZURE_SQL_USER }} \
+        -P ${{ secrets.AZURE_SQL_PASSWORD }} \
+        -i V1_SCHEMA.sql
+      else
+        echo "ERROR: Schema file not found"
+        exit 1
+      fi
+
+  # Step 5: Run Seed
   - name: Run Seed
     run: |
-      /opt/mssql-tools/bin/sqlcmd \
-      -S ${{ secrets.AZURE_SQL_SERVER }} \
-      -d ${{ secrets.AZURE_SQL_DB }} \
-      -U ${{ secrets.AZURE_SQL_USER }} \
-      -P ${{ secrets.AZURE_SQL_PASSWORD }} \
-      -i V2_seed.sql
+      echo "Running Seed..."
 
-  - uses: actions/setup-python@v5
+      if [ -f "V2_seed.sql" ]; then
+        /opt/mssql-tools/bin/sqlcmd \
+        -S ${{ secrets.AZURE_SQL_SERVER }} \
+        -d ${{ secrets.AZURE_SQL_DB }} \
+        -U ${{ secrets.AZURE_SQL_USER }} \
+        -P ${{ secrets.AZURE_SQL_PASSWORD }} \
+        -i V2_seed.sql
+      else
+        echo "Seed file not found, skipping..."
+      fi
+
+  # Step 6: Setup Python
+  - name: Setup Python
+    uses: actions/setup-python@v5
     with:
       python-version: '3.10'
 
-  - name: Install Dependencies
-    run: pip install -r backend/requirements.txt
+  # Step 7: Install dependencies ✅ FIXED
+  - name: Install dependencies
+    run: |
+      pip install --upgrade pip
+      pip install -r backend/requirements.txt
 
-  - uses: azure/login@v2
+  # Step 8: Azure Login
+  - name: Azure Login
+    uses: azure/login@v2
     with:
       client-id: ${{ secrets.AZURE_CLIENT_ID }}
       tenant-id: ${{ secrets.AZURE_TENANT_ID }}
       subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-  - uses: azure/webapps-deploy@v3
+  # Step 9: Deploy Backend ✅ FIXED
+  - name: Deploy to Azure Web App
+    uses: azure/webapps-deploy@v3
     with:
       app-name: venu-api
       package: .
