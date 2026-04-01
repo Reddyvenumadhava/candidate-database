@@ -1,7 +1,7 @@
 name: Full Deployment (DB + Backend)
 
 on:
-  push:
+ push:
     branches:
       - main
 
