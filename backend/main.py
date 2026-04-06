@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# TEST ROUTE (VERY IMPORTANT)
+# ROOT TEST (VERY IMPORTANT)
 @app.get("/")
 def home():
     return {"message": "API working"}
@@ -53,7 +53,9 @@ async def parse_resume(file: UploadFile = File(...)):
 
         with pdfplumber.open(file.file) as pdf:
             for page in pdf.pages:
-                text += page.extract_text() or ""
+                extracted = page.extract_text()
+                if extracted:
+                    text += extracted
 
         email = re.findall(r"\S+@\S+", text)
         phone = re.findall(r"\+?\d[\d\s-]{8,}", text)
