@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>User Management App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 30px;
+        }
+
+```
+    h1 {
+        color: #333;
+    }
+
+    button {
+        padding: 10px 15px;
+        margin: 5px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    input {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    ul {
+        margin-top: 10px;
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+    }
+</style>
+```
+
+</head>
+<body>
+
+<h1>🚀 User Management App</h1>
+
+<h2>📋 Get Users</h2>
+<button onclick="getUsers()">Get Users</button>
+<ul id="userList"></ul>
+
+<h2>➕ Add User</h2>
+<input type="text" id="name" placeholder="Enter name">
+<button onclick="addUser()">Add User</button>
+
+<script>
+const BASE_URL = "https://venu-api-bzhsgremescphybd.centralindia-01.azurewebsites.net";
+
+async function getUsers() {
+    try {
+        const res = await fetch(BASE_URL + "/users");
+        const data = await res.json();
+
+        let list = document.getElementById("userList");
+        list.innerHTML = "";
+
+        data.users.forEach(user => {
+            let li = document.createElement("li");
+            li.innerText = user;
+            list.appendChild(li);
+        });
+    } catch (error) {
+        alert("Error fetching users");
+    }
+}
+
+async function addUser() {
+    let name = document.getElementById("name").value;
+
+    if (!name) {
+        alert("Please enter a name");
+        return;
+    }
+
+    try {
+        await fetch(BASE_URL + "/add-user?name=" + name, {
+            method: "POST"
+        });
+
+        alert("User added successfully!");
+        getUsers();
+    } catch (error) {
+        alert("Error adding user");
+    }
+}
+</script>
+
+</body>
+</html>
