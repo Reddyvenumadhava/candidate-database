@@ -5,7 +5,7 @@ import re
 
 app = FastAPI()
 
-# CORS (IMPORTANT for frontend)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,8 +14,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ================= USERS =================
+# TEST ROUTE (VERY IMPORTANT)
+@app.get("/")
+def home():
+    return {"message": "API working"}
 
+# USERS
 users = ["Venu", "Ravi", "Kiran"]
 
 @app.get("/users")
@@ -25,25 +29,23 @@ def get_users():
 @app.post("/add-user")
 def add_user(name: str):
     users.append(name)
-    return {"message": f"{name} added successfully"}
+    return {"message": f"{name} added"}
 
 @app.put("/update-user")
 def update_user(old_name: str, new_name: str):
     if old_name in users:
-        index = users.index(old_name)
-        users[index] = new_name
-        return {"message": "User updated"}
-    return {"message": "User not found"}
+        users[users.index(old_name)] = new_name
+        return {"message": "updated"}
+    return {"message": "not found"}
 
 @app.delete("/delete-user")
 def delete_user(name: str):
     if name in users:
         users.remove(name)
-        return {"message": "User deleted"}
-    return {"message": "User not found"}
+        return {"message": "deleted"}
+    return {"message": "not found"}
 
-# ================= RESUME PARSER =================
-
+# RESUME PARSER
 @app.post("/parse-resume")
 async def parse_resume(file: UploadFile = File(...)):
     try:
