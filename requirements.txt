@@ -1,4 +1,4 @@
-fastapi
-uvicorn
-gunicorn
-pdfplumber
+fastapi==0.110.0
+uvicorn==0.29.0
+gunicorn==21.2.0
+pdfplumber==0.10.3
