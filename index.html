@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title>User Management App</title>
+    <title>User Management + Resume Parser</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,6 +42,13 @@
         background: white;
         border-radius: 5px;
     }
+
+    #result {
+        margin-top: 10px;
+        padding: 10px;
+        background: #e9ecef;
+        border-radius: 5px;
+    }
 </style>
 ```
 
@@ -67,8 +74,19 @@
 <input type="text" id="deleteName" placeholder="Enter name">
 <button onclick="deleteUser()">Delete</button>
 
+<hr>
+
+<h1>📄 Resume Parsing</h1>
+
+<input type="file" id="resumeFile">
+<button onclick="uploadResume()">Upload Resume</button>
+
+<div id="result"></div>
+
 <script>
 const BASE_URL = "https://venu-api-bzhsgremescphybd.centralindia-01.azurewebsites.net";
+
+// ================= USERS =================
 
 async function getUsers() {
     try {
@@ -153,6 +171,35 @@ async function deleteUser() {
         getUsers();
     } catch (error) {
         alert("Error deleting user");
+    }
+}
+
+// ================= RESUME PARSING =================
+
+async function uploadResume() {
+    let fileInput = document.getElementById("resumeFile");
+    let file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select a file");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const res = await fetch(BASE_URL + "/parse-resume", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        document.getElementById("result").innerHTML =
+            "<b>Extracted Email:</b> " + data.email;
+    } catch (error) {
+        alert("Error parsing resume");
     }
 }
 </script>
