@@ -93,4 +93,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: venu-api
-          package: ./backend
+          package: .
