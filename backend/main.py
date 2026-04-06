@@ -11,14 +11,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def home():
-    return {"message": "API working"}
+users = ["Venu", "Ravi", "Kiran"]
 
 @app.get("/users")
 def get_users():
-    return {"users": ["Venu", "Ravi", "Kiran"]}
+    return {"users": users}
 
 @app.post("/add-user")
 def add_user(name: str):
+    users.append(name)
     return {"message": f"{name} added successfully"}
