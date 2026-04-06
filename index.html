@@ -58,6 +58,15 @@
 <input type="text" id="name" placeholder="Enter name">
 <button onclick="addUser()">Add User</button>
 
+<h2>✏️ Update User</h2>
+<input type="text" id="oldName" placeholder="Old name">
+<input type="text" id="newName" placeholder="New name">
+<button onclick="updateUser()">Update</button>
+
+<h2>❌ Delete User</h2>
+<input type="text" id="deleteName" placeholder="Enter name">
+<button onclick="deleteUser()">Delete</button>
+
 <script>
 const BASE_URL = "https://venu-api-bzhsgremescphybd.centralindia-01.azurewebsites.net";
 
@@ -92,17 +101,58 @@ async function addUser() {
             method: "POST"
         });
 
-        if (!res.ok) {
-            throw new Error("Failed");
-        }
-
         const data = await res.json();
         alert(data.message);
 
         document.getElementById("name").value = "";
-        getUsers(); // refresh list
+        getUsers();
     } catch (error) {
         alert("Error adding user");
+    }
+}
+
+async function updateUser() {
+    let oldName = document.getElementById("oldName").value;
+    let newName = document.getElementById("newName").value;
+
+    if (!oldName || !newName) {
+        alert("Enter both names");
+        return;
+    }
+
+    try {
+        const res = await fetch(BASE_URL + `/update-user?old_name=${encodeURIComponent(oldName)}&new_name=${encodeURIComponent(newName)}`, {
+            method: "PUT"
+        });
+
+        const data = await res.json();
+        alert(data.message);
+
+        getUsers();
+    } catch (error) {
+        alert("Error updating user");
+    }
+}
+
+async function deleteUser() {
+    let name = document.getElementById("deleteName").value;
+
+    if (!name) {
+        alert("Enter name");
+        return;
+    }
+
+    try {
+        const res = await fetch(BASE_URL + "/delete-user?name=" + encodeURIComponent(name), {
+            method: "DELETE"
+        });
+
+        const data = await res.json();
+        alert(data.message);
+
+        getUsers();
+    } catch (error) {
+        alert("Error deleting user");
     }
 }
 </script>
