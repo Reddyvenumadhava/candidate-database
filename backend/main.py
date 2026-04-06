@@ -1,43 +1,21 @@
-from fastapi import FastAPI
+from fastapi import UploadFile, File
+import pdfplumber
+import re
 
-app = FastAPI()
-from fastapi.middleware.cors import CORSMiddleware
+@app.post("/parse-resume")
+async def parse_resume(file: UploadFile = File(...)):
+    text = ""
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    # Read PDF
+    with pdfplumber.open(file.file) as pdf:
+        for page in pdf.pages:
+            text += page.extract_text() or ""
 
-users = ["Venu", "Ravi", "Kiran"]
+    # Extract email
+    email = re.findall(r"\S+@\S+", text)
+    email = email[0] if email else "Not found"
 
-@app.get("/users")
-def get_users():
-    return {"users": users}
-
-
-@app.post("/add-user")
-def add_user(name: str):
-    users.append(name)
-    return {"message": f"{name} added successfully"}
-
-
-# DELETE USER
-@app.delete("/delete-user")
-def delete_user(name: str):
-    if name in users:
-        users.remove(name)
-        return {"message": f"{name} deleted"}
-    return {"message": "User not found"}
-
-
-# UPDATE USER
-@app.put("/update-user")
-def update_user(old_name: str, new_name: str):
-    if old_name in users:
-        index = users.index(old_name)
-        users[index] = new_name
-        return {"message": f"{old_name} updated to {new_name}"}
-    return {"message": "User not found"}
+    return {
+        "email": email,
+        "text": text[:500]
+    }
