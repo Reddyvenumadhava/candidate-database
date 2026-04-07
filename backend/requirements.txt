@@ -1,4 +1,6 @@
-fastapi==0.110.0
-uvicorn==0.29.0
-gunicorn==21.2.0
-pdfplumber==0.10.3
+fastapi
+uvicorn
+gunicorn
+sqlalchemy
+pyodbc
+python-dotenv
