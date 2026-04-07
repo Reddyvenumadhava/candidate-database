@@ -24,7 +24,6 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-          cd backend
           pip install -r requirements.txt
 
       # Deploy to Azure
@@ -33,4 +32,4 @@ jobs:
         with:
           app-name: resume-parser-api-venu123
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./backend
+          package: .
